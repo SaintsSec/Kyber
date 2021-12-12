@@ -5,5 +5,6 @@ PySec is a library of python security tools for use in the field but also as a p
 I chose python because it is the main scripting language used by security people the world over. Sounded like a good place to start.  
 Right now we have a a few basic tools with a "netcat replacement" in the works.  I hope to implement new tools over time.  
 
-It should be said that this is all code that can be found in: https://nostarch.com/black-hat-python2E - I am however throwing my own modifications on it.  
+It should be said that this is all code that can be found in: https://nostarch.com/black-hat-python2E   
+I am however throwing my own modifications on it.  
 
