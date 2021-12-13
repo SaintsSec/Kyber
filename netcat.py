@@ -1,7 +1,14 @@
-import argparse, socket, shlex, subprocess, sys, textwrap, threading
+# Individually lined so that a reasoning for each import can be given.
+import argparse
+import socket # Used for networking.
+import shlex
+import subprocess # Used to initalize subprocessing abilities of python.
+import sys # Used for system interaction.
+import textwrap
+import threading # Used for threading processes.
 
-#
-class NetCat:
+# Primary program.
+class NetCat: # Defines NetCat
     def __init__(self, args, buffer='none'):
         self.args = args
         self.buffer = buffer
@@ -10,7 +17,7 @@ class NetCat:
     def execute(cmd):
         cmd = cmd.strip()
         if not cmd:
-             return
+            return
         output = subprocess.check_output(shlex.split(cmd),
         stderr = subprocess.STDOUT)
         return output.decode()           
@@ -19,12 +26,12 @@ class NetCat:
             self.listen()
         else:
             self.send()
-        
+
     def send(self):
         self.socket.connect((self.args.target, self.args.port))
         if self.buffer:
             self.socket.send(self.buffer)
-                
+
         try:
             while True:
                 recv_len = 1
@@ -40,57 +47,57 @@ class NetCat:
                         buffer = input('> ')
                         buffer += '\n'
                         self.socket.send(buffer.encode())
-            
+
         except KeyboardInterrupt:
             print("User terminated")
             self.socket.close()
             sys.exit()
-            
-        def listen(self):
-            socket.socket.bind(self.args.target, self.args.port)
-            self.socket.listen(5)
-            while True:
-                client_socket, _= self.socket.accept()
-                client_thread = threading.Thread(
-                    target=self.handle, args=(client_socket,)
-                )
-                client_thread.start()
-            
-        def handle(self, client_socket):
-            if self.args.execute:
-                output = execute(self.args.execute)
-                client_socket.send(output.encode())
-                    
-            elif self.args.upload:
-                file_buffer = b''
-                while True:
-                    data = client_socket.recv(4096)
-                    if data:
-                        file_buffer += data
-                    else:
-                        break
-                with open(self.args.upload, 'wb') as f:
-                    f.write(file_buffer)
-                message = f'saved file {self.args.upload}'
-                client_socket.send(message.encode())
-                    
-            elif self.args.command:
-                cmd_buffer = b''
-                while True:
-                    try:
-                        client_socket.send(b'MCT: #> ')
-                        while '\n' not in cmd_buffer.decode():
-                            cmd_buffer += client_socket.recv(64)
-                        response = execute(cmd_buffer.decode())
-                        if response:
-                            client_socket.send(response.encode())
-                        cmd_buffer = b''
-                    except Exception as e:
-                        print(f"server killed {e}")
-                        self.socket.close()
-                        sys.exit()
 
-if __name__ == '__main__':
+    def listen(self): # Changed indentation by 1, as it was blanked out otherwise | Lines 56/98.
+        socket.socket.bind(self.args.target, self.args.port)
+        self.socket.listen(5)
+        while True:
+            client_socket, _= self.socket.accept()
+            client_thread = threading.Thread(
+                target=self.handle, args=(client_socket,)
+            )
+            client_thread.start()
+            
+    def handle(self, client_socket):
+        if self.args.execute:
+            output = execute(self.args.execute)
+            client_socket.send(output.encode())
+                
+        elif self.args.upload:
+            file_buffer = b''
+            while True:
+                data = client_socket.recv(4096)
+                if data:
+                    file_buffer += data
+                else:
+                    break
+            with open(self.args.upload, 'wb') as f:
+                f.write(file_buffer)
+            message = f'saved file {self.args.upload}'
+            client_socket.send(message.encode())
+                
+        elif self.args.command:
+            cmd_buffer = b''
+            while True:
+                try:
+                    client_socket.send(b'MCT: #> ')
+                    while '\n' not in cmd_buffer.decode():
+                        cmd_buffer += client_socket.recv(64)
+                    response = execute(cmd_buffer.decode())
+                    if response:
+                        client_socket.send(response.encode())
+                    cmd_buffer = b''
+                except Exception as e:
+                    print(f"server killed {e}")
+                    self.socket.close()
+                    sys.exit()
+
+if __name__ == '__main__': # Prints fine in terminal | Lines 100/116.
     parser = argparse.ArgumentParser(
         description='MoarCrisco Net Tool',
         formatter_class= argparse.RawDescriptionHelpFormatter,
@@ -112,5 +119,5 @@ if __name__ == '__main__':
     if args.listen:
         buffer = ''
     else:
-        buffer = sys.stdin.read()
+        buffer = sys.stdin.read() # Prints this as an error if keyboard interupts using CTRL+C, though it shouldn't.
 nc = NetCat(args, buffer.encode())
