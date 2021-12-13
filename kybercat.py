@@ -99,14 +99,20 @@ class NetCat: # Defines NetCat
 
 if __name__ == '__main__': # Prints fine in terminal | Lines 100/116.
     parser = argparse.ArgumentParser(
-        description='MoarCrisco Net Tool',
+        description='''
+           __  ___                _____    _                _   __ __     __          
+          /  |/  /__  ___ _____  / ___/___(_)__ _______    (_) / //_/_ __/ /  ___ ____
+         / /|_/ / _ \/ _ `/ __/ / /__/ __/ (_-</ __/ _ \  _   / ,< / // / _ \/ -_) __/
+        /_/  /_/\___/\_,_/_/    \___/_/ /_/___/\__/\___/ (_) /_/|_|\_, /_.__/\__/_/   
+                                                                  /___/  
+        ''',
         formatter_class= argparse.RawDescriptionHelpFormatter,
         epilog=textwrap.dedent('''example:
             netcat.py -t 192.168.1.108 -p 5555 -l -c # command shell
             netcat.py -t 192.168.1.108 -p 5555 -l -u mytext.txt #upload to file
             netcat.py -t 192.168.1.108 -p 5555 -l -e=\"cat /etc/passwd\" #execute a command
             echo 'Moar Crisco' | ./netcat.py -t 192.168.1.108 -p 135 #echo text to server port 135
-            netcat.py -t 192.168.1.108 -p 5555 #connect to a server
+            netcat.py -t 192.168.1.108 -p 5555 #connect to a server\n\n
         '''))
     parser.add_argument('-c', '--command', action='store_true', help='command shell')
     parser.add_argument('-e', '--execute', help='execute a specific command')
