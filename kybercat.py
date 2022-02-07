@@ -48,7 +48,7 @@ class KyberCat:
                         break
                 if response:
                     print(response)
-                    buffer = input('KC> ')
+                    buffer = input('> ')
                     buffer += '\n'
                     self.socket.send(buffer.encode())
         except KeyboardInterrupt:
