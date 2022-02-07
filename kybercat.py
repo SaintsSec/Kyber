@@ -7,72 +7,73 @@ import sys # Used for system interaction.
 import textwrap
 import threading # Used for threading processes.
 
+def execute(cmd):
+    cmd = cmd.strip()
+    if not cmd:
+        return
+    output = subprocess.check_output(shlex.split(cmd),
+    stderr = subprocess.STDOUT)
+    return output.decode()   
 
-# Primary program.
-class KyberCat: # Defines NetCat
-    s = socket.socket
-    def __init__(self, args, buffer='None'):
-        self.args = args
-        self.buffer = buffer
-        self.s = s(s.AF_INET, s.SOCK_STREAM)
-        self.s.setsockopt(s.SOL_SOCKET, s.SO_REUSEADDR, 1)
-    def execute(cmd):
-        cmd = cmd.strip()
-        if not cmd:
-            return
-        output = subprocess.check_output(shlex.split(cmd),
-        stderr = subprocess.STDOUT)
-        return output.decode()           
+# Primary program / socket creation
+class KyberCat:
+    def __init__(self, args, buffer="None"):
+        self.args = args 
+        self.buffer = buffer 
+        self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+    
+    
+    #delegates execution to two methods    
     def run(self):
         if self.args.listen:
             self.listen()
         else:
             self.send()
-
+    
     def send(self):
         self.socket.connect((self.args.target, self.args.port))
         if self.buffer:
-            self.s.send(self.buffer)
-
+            self.socket.send(self.buffer)
+        
         try:
-            while True:
+            while true:
                 recv_len = 1
-                response = ''
+                response = ""
                 while recv_len:
-                    data = self.s.recv(4096)
+                    data = self.socket.recv(4096)
                     recv_len = len(data)
                     response += data.decode()
                     if recv_len < 4096:
                         break
-                    if response:
-                        print(response)
-                        buffer = input('> ')
-                        buffer += '\n'
-                        self.s.send(buffer.encode())
-
+                if response:
+                    print(response)
+                    buffer = input('KC> ')
+                    buffer += '\n'
+                    self.socket.send(buffer.encode())
         except KeyboardInterrupt:
-            print("User terminated")
-            self.s.close()
+            print("User terminated...")
+            self.socket.close()
             sys.exit()
-
-    def listen(self): # Changed indentation by 1, as it was blanked out otherwise | Lines 56/98.
-        s.socket.bind(self.args.target, self.args.port)
-        self.s.listen(5)
-        while True:
-            client_socket, _= self.socket.accept()
+    
+    def listen(self):
+        self.socket.bind((self.args.target, self.args.port))
+        self.socket.listen(5)
+        while true:
+            client_socket, _ = self.socket.accept()
             client_thread = threading.Thread(
                 target=self.handle, args=(client_socket,)
             )
             client_thread.start()
-            
+    
     def handle(self, client_socket):
         if self.args.execute:
             output = execute(self.args.execute)
             client_socket.send(output.encode())
-                
+            
         elif self.args.upload:
             file_buffer = b''
-            while True:
+            while true:
                 data = client_socket.recv(4096)
                 if data:
                     file_buffer += data
@@ -80,14 +81,14 @@ class KyberCat: # Defines NetCat
                     break
             with open(self.args.upload, 'wb') as f:
                 f.write(file_buffer)
-            message = f'saved file {self.args.upload}'
+            message = f'Saved file {self.args.upload}'
             client_socket.send(message.encode())
-                
+        
         elif self.args.command:
             cmd_buffer = b''
-            while True:
+            while true:
                 try:
-                    client_socket.send(b'MCT: #> ')
+                    client.socket.send(b'MCKC: #> ')
                     while '\n' not in cmd_buffer.decode():
                         cmd_buffer += client_socket.recv(64)
                     response = execute(cmd_buffer.decode())
@@ -95,7 +96,7 @@ class KyberCat: # Defines NetCat
                         client_socket.send(response.encode())
                     cmd_buffer = b''
                 except Exception as e:
-                    print(f"server killed {e}")
+                    print(f'Server killed {e}')
                     self.socket.close()
                     sys.exit()
 
