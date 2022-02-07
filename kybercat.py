@@ -7,9 +7,10 @@ import sys # Used for system interaction.
 import textwrap
 import threading # Used for threading processes.
 
-s = socket.socket
+
 # Primary program.
 class KyberCat: # Defines NetCat
+    s = socket.socket
     def __init__(self, args, buffer='None'):
         self.args = args
         self.buffer = buffer
