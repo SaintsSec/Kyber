@@ -7,13 +7,14 @@ import sys # Used for system interaction.
 import textwrap
 import threading # Used for threading processes.
 
+s = socket.socket
 # Primary program.
 class KyberCat: # Defines NetCat
     def __init__(self, args, buffer='None'):
         self.args = args
         self.buffer = buffer
-        self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+        self.s = s(s.AF_INET, s.SOCK_STREAM)
+        self.s.setsockopt(s.SOL_SOCKET, s.SO_REUSEADDR, 1)
     def execute(cmd):
         cmd = cmd.strip()
         if not cmd:
@@ -30,14 +31,14 @@ class KyberCat: # Defines NetCat
     def send(self):
         self.socket.connect((self.args.target, self.args.port))
         if self.buffer:
-            self.socket.send(self.buffer)
+            self.s.send(self.buffer)
 
         try:
             while True:
                 recv_len = 1
                 response = ''
                 while recv_len:
-                    data = self.socket.recv(4096)
+                    data = self.s.recv(4096)
                     recv_len = len(data)
                     response += data.decode()
                     if recv_len < 4096:
@@ -46,16 +47,16 @@ class KyberCat: # Defines NetCat
                         print(response)
                         buffer = input('> ')
                         buffer += '\n'
-                        self.socket.send(buffer.encode())
+                        self.s.send(buffer.encode())
 
         except KeyboardInterrupt:
             print("User terminated")
-            self.socket.close()
+            self.s.close()
             sys.exit()
 
     def listen(self): # Changed indentation by 1, as it was blanked out otherwise | Lines 56/98.
-        socket.socket.bind(self.args.target, self.args.port)
-        self.socket.listen(5)
+        s.socket.bind(self.args.target, self.args.port)
+        self.s.listen(5)
         while True:
             client_socket, _= self.socket.accept()
             client_thread = threading.Thread(
