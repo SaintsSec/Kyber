@@ -8,8 +8,8 @@ import textwrap
 import threading # Used for threading processes.
 
 # Primary program.
-class NetCat: # Defines NetCat
-    def __init__(self, args, buffer='none'):
+class KyberCat: # Defines NetCat
+    def __init__(self, args, buffer='None'):
         self.args = args
         self.buffer = buffer
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -108,11 +108,11 @@ if __name__ == '__main__': # Prints fine in terminal | Lines 100/116.
         ''',
         formatter_class= argparse.RawDescriptionHelpFormatter,
         epilog=textwrap.dedent('''example:
-            netcat.py -t 192.168.1.108 -p 5555 -l -c # command shell
-            netcat.py -t 192.168.1.108 -p 5555 -l -u mytext.txt #upload to file
-            netcat.py -t 192.168.1.108 -p 5555 -l -e=\"cat /etc/passwd\" #execute a command
-            echo 'Moar Crisco' | ./netcat.py -t 192.168.1.108 -p 135 #echo text to server port 135
-            netcat.py -t 192.168.1.108 -p 5555 #connect to a server\n\n
+            kybercat.py -t 192.168.1.108 -p 5555 -l -c # creates a command shell server
+            kybercat.py -t 192.168.1.108 -p 5555 -l -u mytext.txt # upload to file
+            kybercat.py -t 192.168.1.108 -p 5555 -l -e=\"cat /etc/passwd\" # execute a command
+            echo 'Moar Crisco' | ./netcat.py -t 192.168.1.108 -p 135 # echo text to server port 135
+            kybercat.py -t 192.168.1.108 -p 5555 # connect to the command shell server\n\n
         '''))
     parser.add_argument('-c', '--command', action='store_true', help='command shell')
     parser.add_argument('-e', '--execute', help='execute a specific command')
@@ -126,4 +126,5 @@ if __name__ == '__main__': # Prints fine in terminal | Lines 100/116.
         buffer = ''
     else:
         buffer = sys.stdin.read() # Prints this as an error if keyboard interupts using CTRL+C, though it shouldn't.
-nc = NetCat(args, buffer.encode())
+kc = KyberCat(args, buffer.encode())
+kc.run()
