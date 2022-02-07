@@ -37,7 +37,7 @@ class KyberCat:
             self.socket.send(self.buffer)
         
         try:
-            while true:
+            while True:
                 recv_len = 1
                 response = ""
                 while recv_len:
@@ -59,7 +59,7 @@ class KyberCat:
     def listen(self):
         self.socket.bind((self.args.target, self.args.port))
         self.socket.listen(5)
-        while true:
+        while True:
             client_socket, _ = self.socket.accept()
             client_thread = threading.Thread(
                 target=self.handle, args=(client_socket,)
@@ -73,7 +73,7 @@ class KyberCat:
             
         elif self.args.upload:
             file_buffer = b''
-            while true:
+            while True:
                 data = client_socket.recv(4096)
                 if data:
                     file_buffer += data
@@ -86,7 +86,7 @@ class KyberCat:
         
         elif self.args.command:
             cmd_buffer = b''
-            while true:
+            while True:
                 try:
                     client.socket.send(b'MCKC: #> ')
                     while '\n' not in cmd_buffer.decode():
