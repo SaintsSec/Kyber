@@ -88,7 +88,7 @@ class KyberCat:
             cmd_buffer = b''
             while True:
                 try:
-                    client.socket.send(b'MCKC: #> ')
+                    client_socket.send(b'MCKC: #> ')
                     while '\n' not in cmd_buffer.decode():
                         cmd_buffer += client_socket.recv(64)
                     response = execute(cmd_buffer.decode())
@@ -96,7 +96,7 @@ class KyberCat:
                         client_socket.send(response.encode())
                     cmd_buffer = b''
                 except Exception as e:
-                    print(f'Server killed {e}')
+                    print(f' ...Server killed {e}')
                     self.socket.close()
                     sys.exit()
 
