@@ -23,7 +23,6 @@ class KyberCat:
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
     
-    
     #delegates execution to two methods    
     def run(self):
         if self.args.listen:
@@ -79,6 +78,7 @@ class KyberCat:
                     file_buffer += data
                 else:
                     break
+                
             with open(self.args.upload, 'wb') as f:
                 f.write(file_buffer)
             message = f'Saved file {self.args.upload}'
@@ -88,7 +88,7 @@ class KyberCat:
             cmd_buffer = b''
             while True:
                 try:
-                    client_socket.send(b'MCKC: #> ')
+                    client_socket.send(b'KC: #> ')
                     while '\n' not in cmd_buffer.decode():
                         cmd_buffer += client_socket.recv(64)
                     response = execute(cmd_buffer.decode())
@@ -103,11 +103,11 @@ class KyberCat:
 if __name__ == '__main__': # Prints fine in terminal | Lines 100/116.
     parser = argparse.ArgumentParser(
         description='''
-           __  ___                _____    _                _   __ __     __          
-          /  |/  /__  ___ _____  / ___/___(_)__ _______    (_) / //_/_ __/ /  ___ ____
-         / /|_/ / _ \/ _ `/ __/ / /__/ __/ (_-</ __/ _ \  _   / ,< / // / _ \/ -_) __/
-        /_/  /_/\___/\_,_/_/    \___/_/ /_/___/\__/\___/ (_) /_/|_|\_, /_.__/\__/_/   
-                                                                  /___/  
+              __ __     __           _____     __ 
+             / //_/_ __/ /  ___ ____/ ___/__ _/ /_
+            / ,< / // / _ \/ -_) __/ /__/ _ `/ __/
+           /_/|_|\_, /_.__/\__/_/  \___/\_,_/\__/ 
+           V0.1 /___/ A Moar Crisco Project
         ''',
         formatter_class= argparse.RawDescriptionHelpFormatter,
         epilog=textwrap.dedent('''example:
