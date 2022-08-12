@@ -47,7 +47,7 @@ class KyberCat:
                         break
                 if response:
                     print(response)
-                    buffer = input('> ')
+                    buffer = input('KC:> ')
                     buffer += '\n'
                     self.socket.send(buffer.encode())
         except KeyboardInterrupt:
@@ -88,7 +88,7 @@ class KyberCat:
             cmd_buffer = b''
             while True:
                 try:
-                    client_socket.send(b'KC: #> ')
+                    client_socket.send(b'connected... ')
                     while '\n' not in cmd_buffer.decode():
                         cmd_buffer += client_socket.recv(64)
                     response = execute(cmd_buffer.decode())
@@ -107,7 +107,7 @@ if __name__ == '__main__': # Prints fine in terminal | Lines 100/116.
              / //_/_ __/ /  ___ ____/ ___/__ _/ /_
             / ,< / // / _ \/ -_) __/ /__/ _ `/ __/
            /_/|_|\_, /_.__/\__/_/  \___/\_,_/\__/ 
-           V0.1 /___/ A Moar Crisco Project
+           V0.1 /___/ @ssgcythes
         ''',
         formatter_class= argparse.RawDescriptionHelpFormatter,
         epilog=textwrap.dedent('''example:
